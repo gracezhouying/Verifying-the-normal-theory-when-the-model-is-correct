@@ -1,0 +1,29 @@
+#create an empty vector to record variance estimates
+vecvariance=c()
+#create an empty vector to record intercept estimates
+vecintercept=c()
+#create an empty vector to record slope estimates
+vecslope=c()
+#repeat the model B times for n=10,100,and 1000
+for (n in c(10,100,1000)){
+x<-rnorm(n,0,2)
+for (i in 1:999)
+{error<-rnorm(n,0,1)
+ y<-3*x+error-1
+ fit=lm(y~x)
+ vecintercept[i]=fit$coefficients[[1]]
+ vecslope[i]=fit$coefficients[[2]]
+ vecvariance[i]=summary(fit)$sigma*summary(fit)$sigma
+}
+#(1)plot the B variance estimates as a histogram
+hist(vecvariance,prob=TRUE,breaks=100)
+curve(dchisq(x*(n-2),n-2)*(n-2),from=0,to=4,add=TRUE,col="red")
+#overlay the chi-square distribution they are supposed to follow, the degrees of freedom is 8
+
+#(2)plot the B intercept estimates as a histogram
+hist(vecintercept, prob =TRUE,breaks=100)
+curve(dnorm(x, mean=mean(vecintercept),sd=sd(vecintercept)),add=TRUE)
+
+#(3)plot the B slope estimates as a histogram
+hist(vecslope,prob=TRUE,breaks=100)
+curve(dnorm(x, mean=mean(vecslope),sd=sd(vecslope)),add=TRUE)}
